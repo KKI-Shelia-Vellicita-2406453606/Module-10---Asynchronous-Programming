@@ -1,0 +1,4 @@
+## Experiment 1.2
+![alt text](<images/Screenshot 2026-05-19 at 13.43.05.png>)
+For this experiment, the "hey hey" prints before "howdy!", even though the "howdy!" code is written earlier in the file. This happens because Futures in Rust are lazy. They do not execute immediately when created.
+<br>When we use 'spawner.spawn(...)', we are simply packaging your code and handing it off to a waiting line, known as a channel. Because the main program does not pause to execute that packaged code, it instantly moves down to the next available instruction. This is exactly why the console prints "hey hey" before anything else happens. The packaged task remains idle in the queue until a dedicated manager, the executor, is explicitly told to start working. Calling 'executor.run()' at the very bottom of your script finally activates this manager. Once activated, the executor pulls your task from the queue and runs it, which is why "howdy!" appears last.

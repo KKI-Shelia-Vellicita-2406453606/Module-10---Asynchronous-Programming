@@ -6,7 +6,7 @@ use tokio_websockets::{ClientBuilder, Message};
 
 #[tokio::main]
 async fn main() -> Result<(), tokio_websockets::Error> {
-    let (mut ws_stream, _) = ClientBuilder::from_uri(Uri::from_static("ws://127.0.0.1:2000"))
+    let (mut ws_stream, _) = ClientBuilder::from_uri(Uri::from_static("ws://127.0.0.1:8080"))
         .connect()
         .await?;
 
@@ -26,7 +26,7 @@ async fn main() -> Result<(), tokio_websockets::Error> {
                     None => return Ok(()),
                 }
             }
-            
+
             res = stdin.next_line() => {
                 match res {
                     Ok(Some(line)) => ws_stream.send(Message::text(line)).await?,

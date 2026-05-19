@@ -24,3 +24,8 @@ This repository is divided to branches that correspond to the blog post sections
 ![alt text](<images/Screenshot 2026-05-19 at 15.16.20.png>)
 ![alt text](<images/Screenshot 2026-05-19 at 15.18.48.png>)
 
+# Experiment 3.2
+I changed the app into a game-style chat lobby. The welcome page now feels like a small player entry screen with icon tiles and a stronger arcade layout.
+![Yew Arena welcome page](images/yew-arena-welcome.png)
+The chat room now supports reactions on other people's messages. Reaction counts are sent through the WebSocket server, and the server prevents users from reacting to their own messages or repeating the same reaction.
+![Yew Arena chat reactions](images/yew-arena-chat-reactions.png)

@@ -1,13 +1,9 @@
-## Experiment 1.2
-![alt text](<images/Screenshot 2026-05-19 at 13.43.05.png>)
+## Experiment 2.1
+![alt text](<images/Screenshot 2026-05-19 at 14.21.35.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.21.42.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.21.48.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.21.54.png>)
 
-For this experiment, the "hey hey" prints before "howdy!", even though the "howdy!" code is written earlier in the file. This happens because Futures in Rust are lazy. They do not execute immediately when created.
-<br>When we use 'spawner.spawn(...)', we are simply packaging your code and handing it off to a waiting line, known as a channel. Because the main program does not pause to execute that packaged code, it instantly moves down to the next available instruction. This is exactly why the console prints "hey hey" before anything else happens. The packaged task remains idle in the queue until a dedicated manager, the executor, is explicitly told to start working. Calling 'executor.run()' at the very bottom of your script finally activates this manager. Once activated, the executor pulls your task from the queue and runs it, which is why "howdy!" appears last.
+To run this application, I first needed to open multiple terminal windows to act as the different components of the chat system. In the first terminal, I executed 'cargo run --bin server' to start the websocket server. As shown in the server screenshot, it successfully began listening on port 2000. Then, I opened three additional terminal tabs and ran 'cargo run --bin client' in each one. The server terminal immediately registered these new connections, logging the unique IP and port for each client. Meanwhile, each client successfully connected and received the initial "Welcome to chat! Type a message" prompt from the server.
+<br>Once all the clients were connected, I tested the broadcast functionality by typing messages into the different client terminals. For example, when I typed "howdyyy" in the first client and pressed enter, the message was captured by the server and immediately broadcasted out. Looking at the client screenshots, you can see that the message "From server: howdyyy" appeared in all the other connected client windows. The same happened when I typed "helloooo" and "heyheyhey" in the subsequent clients. This demonstrates that the 'tokio::select!' loops are working correctly. The server is concurrently listening for incoming text from any individual client and immediately pushing that text out to the shared broadcast channel, updating all clients in real time.
 
-## Experiment 1.3
-![alt text](<images/Screenshot 2026-05-19 at 13.57.12.png>)
-![alt text](<images/Screenshot 2026-05-19 at 13.57.57.png>)
-
-When we spawn multiple tasks, it allows us to see Rust's single-thread concurrency. The main thread queues all three tasks instantly, printing "hey hey" before waiting for anything. Then, the executor takes over. It pulls the first task, prints "howdy!", hits the 2-second timer, and immediately yields control. Because it yielded, the executor doesn't wait. It pulls the "howdy2!" and "howdy3!", starting their timers too. All three tasks wait simultaneously in the background and wake up to print their "done!" messages at roughly the exact same time.
-
-In the second part of the experiment where the 'drop(spawner)' is removed, the terminal freezes after finishing the tasks. This happens because the executor uses a continuous loop that blocks the thread while waiting for new messages to enter the channel. In Rust, a channel only closes when all of its senders (Spawner objects) are destroyed. By removing the 'drop(spawner)', the main spawner remains active. The executor assumes more tasks might be coming, so it waits forever causing the program to hang. Explicitly calling drop destroys the sender, officially closing the channel and allowing the program to exit cleanly.

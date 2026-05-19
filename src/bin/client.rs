@@ -1,5 +1,5 @@
-use futures_util::stream::StreamExt;
 use futures_util::SinkExt;
+use futures_util::stream::StreamExt;
 use http::Uri;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio_websockets::{ClientBuilder, Message};
@@ -36,6 +36,6 @@ async fn main() -> Result<(), tokio_websockets::Error> {
             }
         }
     }
-    
+
     Ok(())
 }

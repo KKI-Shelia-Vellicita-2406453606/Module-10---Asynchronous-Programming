@@ -29,3 +29,18 @@ I changed the app into a game-style chat lobby. The welcome page now feels like 
 ![Yew Arena welcome page](images/yew-arena-welcome.png)
 The chat room now supports reactions on other people's messages. Reaction counts are sent through the WebSocket server, and the server prevents users from reacting to their own messages or repeating the same reaction.
 ![Yew Arena chat reactions](images/yew-arena-chat-reactions.png)
+
+# Bonus
+
+I modified the Rust WebSocket server from Tutorial 2 in `../timer_future/src/bin/server.rs` so it can serve this Yew webchat. The important change is that the server no longer treats each WebSocket message as plain chat text. It now treats each incoming text frame as serialized JSON, deserializes it, checks the `messageType`, and sends back serialized JSON text using the same format expected by the Tutorial 3 frontend.
+
+The Rust server supports:
+
+* `register` to save the player's nickname.
+* `users` to broadcast the online player list.
+* `message` to broadcast chat messages with `id`, `from`, `message`, `time`, and `reactions`.
+* `reaction` to update reaction counts on another player's message.
+
+This is a successful change because the Yew client did not need a protocol rewrite. It still connects to `ws://127.0.0.1:8080`, still sends JSON as text, and still receives the same `users`, `message`, and `reaction` events. I verified it by running the Rust server with the Yew frontend: two players could join, send chat messages, and react to each other's messages.
+
+Between the JavaScript and Rust versions, I prefer the Rust version for the server. JavaScript is faster to write and easier for quick experiments, but Rust feels better for the backend because the message structures, shared state, and invalid cases are more explicit. The compiler helps catch mistakes before the server runs, which is valuable for real-time features like chat.

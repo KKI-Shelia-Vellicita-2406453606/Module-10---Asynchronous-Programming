@@ -10,3 +10,11 @@ To run this application, I first needed to open multiple terminal windows to act
 ## Experiment 2.2
 
 The goal is to change the WebSocket communication port from the default 2000 to 8080. To achieve this successfully, we must modify the code in both the server and the client files. In the server file, we need to update the TcpListener::bind function so that it listens on "127.0.0.1:8080". Similarly, in the client file, we must update the ClientBuilder::from_uri string to target "ws://127.0.0.1:8080". If we only update one side, the application will break because the client and server must agree on the exact same location to communicate. A mismatch would result in a "connection refused" error when the client attempts to dial an inactive endpoint. Both files continue to utilize the exact same standard WebSocket protocol, just routed through the newly designated port.
+
+## Experiment 2.3
+![alt text](<images/Screenshot 2026-05-19 at 14.48.50.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.48.56.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.49.03.png>)
+![alt text](<images/Screenshot 2026-05-19 at 14.49.10.png>)
+
+In this experiment, the goal was to identify who sent a message by attaching their IP address and port number to their chat text. To achieve this, I modified the 'handle_connection function' in the server code to actively use the client's SocketAddr variable. Instead of just broadcasting the raw incoming text, I used the 'format!' macro to prepend the sender's address to their message. The server then sends this newly combined string into the shared broadcast channel for all connected clients to receive. Because of this change, the server no longer sends anonymous messages, ensuring everyone knows exactly where each chat originated. For example, instead of just displaying "hello!", all clients will now clearly see a stamp like "127.0.0.1:54608: hello!" on their screens.

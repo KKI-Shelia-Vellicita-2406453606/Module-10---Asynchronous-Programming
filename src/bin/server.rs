@@ -7,7 +7,7 @@ use tokio::sync::broadcast::{channel, Sender};
 use tokio_websockets::{Message, ServerBuilder, WebSocketStream};
 
 async fn handle_connection(
-    _addr: SocketAddr,
+    addr: SocketAddr,
     mut ws_stream: WebSocketStream<TcpStream>,
     bcast_tx: Sender<String>,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
@@ -21,7 +21,8 @@ async fn handle_connection(
                 match incoming {
                     Some(Ok(msg)) => {
                         if let Some(text) = msg.as_text() {
-                            let _ = bcast_tx.send(text.to_string());
+                            let formatted_msg = format!("{}: {}", addr, text);
+                            let _ = bcast_tx.send(formatted_msg);
                         }
                     }
                     Some(Err(err)) => return Err(err.into()),
